@@ -30,7 +30,10 @@ impl TextContext {
 
     pub fn get(&self, key: &str) -> usize {
         let lookup   = GLOBAL_FUNCTION_LOOKUP.lock().unwrap();
-        *lookup.get(key).unwrap()
+        match lookup.get(key) {
+            Some(function_pointer) => *function_pointer,
+            None => panic!("Unable to find a mocked function with the identifier: {}.", key)
+        }
     }
 }
 
