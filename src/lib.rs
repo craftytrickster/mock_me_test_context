@@ -25,11 +25,15 @@ pub struct TextContext;
 impl TextContext {
     pub fn set(&self, key: String, value: usize) {
         let mut lookup = GLOBAL_FUNCTION_LOOKUP.lock().unwrap();
+        if lookup.contains_key(&*key) {
+            panic!("You have already used the mocking key '{}', you cannot have duplicate keys!", key);
+        }
+
         lookup.insert(key, value);
     }
 
     pub fn get(&self, key: &str) -> usize {
-        let lookup   = GLOBAL_FUNCTION_LOOKUP.lock().unwrap();
+        let lookup = GLOBAL_FUNCTION_LOOKUP.lock().unwrap();
         match lookup.get(key) {
             Some(function_pointer) => *function_pointer,
             None => panic!("Unable to find a mocked function with the identifier: {}.", key)
